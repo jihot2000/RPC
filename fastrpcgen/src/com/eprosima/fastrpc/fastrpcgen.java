@@ -11,11 +11,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.Scanner;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateErrorListener;
+import com.eprosima.idl.generator.manager.TemplateExtension;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.DefaultTemplateLexer;
 import org.antlr.v4.runtime.ANTLRFileStream;
@@ -1177,16 +1180,22 @@ public class fastrpcgen
             // Create initial context.
             Context ctx = new DDSContext(onlyFileName, idlFilename, m_includePaths, m_clientcode, m_servercode,
                     m_appProduct, m_include_include_prefix, m_types);
-
+            ctx.ignore_case(false);
             // Create template manager
             TemplateManager tmanager = null;
             // Load templates depending on dds types.
             if(m_types == DDS_TYPES.EPROSIMA)
             {
                 tmanager = new TemplateManager("FastCdrCommon:eprosima:Common", ctx, false);
+
+                List<TemplateExtension> extensions = new ArrayList<TemplateExtension>();
+
                 // Load template to generate source for common types.
-                tmanager.addGroup("TypesHeader");
-                tmanager.addGroup("TypesSource");
+                extensions.add(new TemplateExtension("struct_type", "keyFunctionHeadersStruct"));
+                tmanager.addGroup("TypesHeader", extensions);
+                extensions.clear();
+                extensions.add(new TemplateExtension("struct_type", "keyFunctionSourcesStruct"));
+                tmanager.addGroup("TypesSource", extensions);
                 // Load template to generate topics for operations.
                 tmanager.addGroup("TopicsHeader" + (m_mode == DDS_TOPIC_MODE.BY_OPERATION ? "ByOperation" : "ByInterface"));
                 tmanager.addGroup("TopicsSource" + (m_mode == DDS_TOPIC_MODE.BY_OPERATION ? "ByOperation" : "ByInterface"));
@@ -2272,3 +2281,4 @@ class ProcessOutput extends Thread
         return m_found_error;
     }
 }
+
