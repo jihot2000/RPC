@@ -11,7 +11,10 @@
 #include <transports/ServerTransport.h>
 
 #include <boost/config/user.hpp>
-#include <boost/threadpool.hpp>
+#include <boost/asio/thread_pool.hpp>
+#include <boost/asio/post.hpp>
+#include <boost/bind/bind.hpp>
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 static const char* const CLASS_NAME = "ThreadPoolStrategy";
 
@@ -46,7 +49,7 @@ public:
     ThreadPoolStrategyImpl(
             unsigned int threadCount)
     {
-        m_pool = new boost::threadpool::pool(threadCount);
+        m_pool = new boost::asio::thread_pool(threadCount);
     }
 
     virtual ~ThreadPoolStrategyImpl()
@@ -54,7 +57,7 @@ public:
         delete m_pool;
     }
 
-    boost::threadpool::pool* getPool()
+    boost::asio::thread_pool* getPool()
     {
         return m_pool;
     }
@@ -63,12 +66,12 @@ public:
             boost::function<void()> callback)
     {
         boost::shared_ptr<ThreadPoolStrategyJob> job(new ThreadPoolStrategyJob(callback));
-        m_pool->schedule(boost::threadpool::task_functor<void>(boost::bind(&ThreadPoolStrategyJob::run, job)));
+        boost::asio::post(*m_pool, boost::bind(&ThreadPoolStrategyJob::run, job));
     }
 
 private:
 
-    boost::threadpool::pool* m_pool;
+    boost::asio::thread_pool * m_pool;
 };
 
 } // namespace strategy
@@ -98,3 +101,4 @@ ServerStrategyImpl* ThreadPoolStrategy::getImpl()
 {
     return m_impl;
 }
+
