@@ -557,8 +557,8 @@ public class fastrpcgen
                 {
                     try
                     {
-                        // First step is to parse the file MessageHeader.idl
-                        ddsGen(m_messageHeaderFileLocation, m_lineCommand, m_lineCommandForWorkDirSet, true, false);
+                        // // First step is to parse the file MessageHeader.idl
+                        // ddsGen(m_messageHeaderFileLocation, m_lineCommand, m_lineCommandForWorkDirSet, true, false);
 
                         // TODO Remove in future when only on project VS will be generated.
                         Utils.declspec(m_outputDir + "MessageHeader.cxx", m_outputDir);
@@ -760,10 +760,10 @@ public class fastrpcgen
                     {
                         String onlyFileName = Util.getIDLFileNameOnly(idlFilename);
 
-                        // Parse the user IDL file that was generated using external tool.
-                        // Note:The file are put in project info inside parseIDL function.
-                        ddsGen(m_tempDir + onlyFileName + ".idl", idlLineCommand, idlLineCommandForWorkDirSet,
-                                true, (m_outputDir.equals(m_defaultOutputDir) ? false : true));
+                        // // Parse the user IDL file that was generated using external tool.
+                        // // Note:The file are put in project info inside parseIDL function.
+                        // ddsGen(m_tempDir + onlyFileName + ".idl", idlLineCommand, idlLineCommandForWorkDirSet,
+                        //         true, (m_outputDir.equals(m_defaultOutputDir) ? false : true));
 
                         // TODO Remove in future when only on project VS will be generated.
                         Utils.declspec(m_outputDir + onlyFileName + ".cxx", m_outputDir);
@@ -781,9 +781,9 @@ public class fastrpcgen
 
                         if(project.getContainsInterfaces())
                         {
-                            // Parse the requestreply IDL file that was generated using external tool.
-                            ddsGen(m_tempDir + onlyFileName + "RequestReply.idl", idlLineCommand, idlLineCommandForWorkDirSet,
-                                    false, (m_outputDir.equals(m_defaultOutputDir) ? false : true));
+                            // // Parse the requestreply IDL file that was generated using external tool.
+                            // ddsGen(m_tempDir + onlyFileName + "RequestReply.idl", idlLineCommand, idlLineCommandForWorkDirSet,
+                            //         false, (m_outputDir.equals(m_defaultOutputDir) ? false : true));
 
                             // TODO Remove in future when only on project VS will be generated.
                             Utils.declspec(m_outputDir + onlyFileName + "RequestReply.cxx", m_outputDir);
@@ -1716,6 +1716,14 @@ public class fastrpcgen
         //}
         finalCommandArray = new String[finalCommandLine.size()];
         finalCommandArray = (String[])finalCommandLine.toArray(finalCommandArray);
+
+        System.out.println("---ddsgen command line-----");
+        StringBuilder ddsgenCmdStringBuilder = new StringBuilder();
+        for(int i = 0; i < finalCommandArray.length; i++) {
+            ddsgenCmdStringBuilder.append(finalCommandArray[i]);
+            ddsgenCmdStringBuilder.append(" ");
+        }
+        System.out.println(ddsgenCmdStringBuilder.toString());
 
         Process ddsgen;     
         //if(!setWorkingDirectory)
