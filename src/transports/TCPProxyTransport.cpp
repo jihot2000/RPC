@@ -10,7 +10,6 @@
 #include <exceptions/ServerNotFoundException.h>
 
 #include <boost/asio.hpp>
-#include <boost/array.hpp>
 #include <iostream>
 
 using namespace std;

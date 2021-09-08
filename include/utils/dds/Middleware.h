@@ -15,7 +15,7 @@
 
 #include <cstdint>
 
-#if defined(RTI_WIN32) || defined(RTI_LINUX) || defined(Linux)
+#if defined(RTI_WIN32) || defined(RTI_LINUX) || defined(RTI_UNIX)
 
 #if defined(_WIN32) && defined(NDDS_DLL_VARIABLE)
 class __declspec(dllimport) DDSEntity;

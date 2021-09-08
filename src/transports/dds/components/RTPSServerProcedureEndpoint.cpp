@@ -21,10 +21,6 @@
 #include <fastrtps/attributes/PublisherAttributes.h>
 #include <fastrtps/subscriber/SampleInfo.h>
 
-#include <boost/config/user.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/bind.hpp>
-
 using namespace eprosima::rpc;
 using namespace ::transport::dds;
 
@@ -49,7 +45,7 @@ int RTPSServerProcedureEndpoint::initialize(const char *name, const char *writer
     if(name != NULL && readertypename != NULL && create_data != NULL && destroy_data != NULL &&
             processFunc != NULL && dataSize > 0)
     {
-        m_mutex =  new boost::mutex();
+        m_mutex =  new std::mutex();
 
         if(m_mutex != NULL)
         {
@@ -221,7 +217,7 @@ void RTPSServerProcedureEndpoint::onNewDataMessage(eprosima::fastrtps::Subscribe
     {
         if(info.sampleKind == eprosima::fastrtps::rtps::ALIVE)
         {
-            m_transport.getStrategy().getImpl()->schedule(boost::bind(&RTPSServerTransport::process, &m_transport, this, data));
+            m_transport.getStrategy().getImpl()->schedule(std::bind(&RTPSServerTransport::process, &m_transport, this, data));
 
             data = m_create_data(m_dataSize);
         }

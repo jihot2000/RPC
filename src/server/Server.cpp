@@ -12,9 +12,6 @@
 #include <transports/ServerTransport.h>
 #include <protocols/Protocol.h>
 
-#include <boost/config/user.hpp>
-#include <boost/thread.hpp>
-
 static const char* const CLASS_NAME ="eprosima::rpc::server::Server";
 
 using namespace eprosima::rpc;

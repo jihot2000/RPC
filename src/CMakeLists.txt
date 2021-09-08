@@ -33,7 +33,7 @@ set_sources(
     utils/dds/Middleware.cpp
     transports/AsyncTask.cpp
     protocols/dds/MessageHeader.cpp
-    protocols/dds/MessageHeaderPlugin.cpp
+    #protocols/dds/MessageHeaderPlugin.cpp
     transports/dds/Transport.cpp
     transports/dds/RTPSTransport.cpp
     transports/dds/ProxyTransport.cpp
@@ -130,7 +130,7 @@ elseif(NOT EPROSIMA_INSTALLER)
 
     target_link_libraries(${PROJECT_NAME} ${PRIVACY}
         ${Boost_LIBRARIES}
-        $<$<OR:$<STREQUAL:"${RPCPROTO}","fastrpc">,$<STREQUAL:"${RPCPROTO}","rpcdds">>:fastcdr>
+        $<$<OR:$<STREQUAL:"${RPCPROTO}","fastrpc">,$<AND:$<STREQUAL:"${RPCPROTO}","rpcdds">,$<BOOL:${WITH_FASTRTPS}>>>:fastcdr>
         $<$<AND:$<STREQUAL:"${RPCPROTO}","rpcdds">,$<BOOL:${WITH_FASTRTPS}>>:fastrtps>
         $<$<AND:$<STREQUAL:"${RPCPROTO}","rpcdds">,$<BOOL:${WITH_RTIDDS}>>:${RTIDDS_LIBRARIES_}>
         )

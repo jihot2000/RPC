@@ -9,7 +9,7 @@
 #ifndef _SERVER_SERVERSTRATEGYIMPL_H_
 #define _SERVER_SERVERSTRATEGYIMPL_H_
 
-#include <boost/function.hpp>
+#include <functional>
 
 namespace eprosima
 {
@@ -44,7 +44,7 @@ namespace eprosima
                      *
                      * \param callback The Server's method to invoke when a request arrives.
                      */
-                    virtual void schedule(boost::function<void()> callback) = 0;
+                    virtual void schedule(std::function<void()> callback) = 0;
             };
         } // namespace strategy
     } // namespace rpc

@@ -14,11 +14,7 @@
 
 #include <iostream>
 #include <string.h>
-#include <boost/thread.hpp>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/lexical_cast.hpp>
 
 #define DEFAULT_BUFFER_SIZE 2048
 

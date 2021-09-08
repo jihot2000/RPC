@@ -3,11 +3,6 @@
 
 #include "transports/components/Endpoint.h"
 #include <boost/asio.hpp>
-#include <boost/array.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/thread.hpp>
-#include <boost/enable_shared_from_this.hpp>
 
 namespace eprosima
 {
@@ -19,9 +14,11 @@ namespace eprosima
 			* @brief This class represents a TCP endpoint.
             * @ingroup TRANSPORTMODULE
 			*/
-            class TCPEndpoint : public boost::enable_shared_from_this<TCPEndpoint>, public Endpoint,
-            private boost::noncopyable
+            class TCPEndpoint : public std::enable_shared_from_this<TCPEndpoint>, public Endpoint
             {
+				private:
+					TCPEndpoint(const TCPEndpoint&) = delete;
+
                 private:
 
                     char *m_readBuffer;
@@ -186,7 +183,7 @@ namespace eprosima
 					/*!
 					 * @brief socket to connect to the endpoint.
 					 */
-                    boost::shared_ptr<boost::asio::ip::tcp::socket> socket_;
+                    std::shared_ptr<boost::asio::ip::tcp::socket> socket_;
 
 					/*!
 					 * @brief io_service to connect to the endpoint.
@@ -206,13 +203,13 @@ namespace eprosima
 					/*!
 					 * @brief Thread to run the communications with the endpoint.
 					 */
-                    boost::shared_ptr<boost::thread> thread_;
+                    std::shared_ptr<std::thread> thread_;
 
 					/*!
 					 * @brief Gets the socket to connect to the endpoint.
 					 * @return Socket to connect to the endpoint.
 					 */
-                    boost::shared_ptr<boost::asio::ip::tcp::socket>& socket();
+                    std::shared_ptr<boost::asio::ip::tcp::socket>& socket();
             };
 
         }

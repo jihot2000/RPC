@@ -25,7 +25,7 @@ class __declspec(dllimport) DDSListener;
 
 #include "../../../utils/dds/Middleware.h"
 
-namespace boost
+namespace std
 {
     class mutex;
 }
@@ -181,7 +181,7 @@ namespace eprosima
 
                         int m_dataSize;
 
-                        boost::mutex *m_mutex;
+                        std::mutex *m_mutex;
 
                         int m_started;
                 };

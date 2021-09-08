@@ -14,8 +14,7 @@
 #include <transports/dds/components/ProxyProcedureEndpoint.h>
 #include <utils/Typedefs.h>
 #include <exceptions/ServerTimeoutException.h>
-
-
+#include <algorithm>
 #include <stdio.h>
 
 static const char* const CLASS_NAME = "eprosima::rpc::transport::dds::AsyncThread";
@@ -47,16 +46,16 @@ int AsyncThread::init()
 
         if(m_waitSet != NULL)
         {
-            m_mutex =  new boost::mutex();
+            m_mutex =  new std::mutex();
 
             if(m_mutex != NULL)
             {
                 try
                 {
-                    m_thread = boost::thread(&AsyncThread::run, this);
+                    m_thread = std::thread(&AsyncThread::run, this);
                     return 0;
                 }
-                catch(boost::thread_resource_error ex)
+                catch(std::exception ex)
                 {
                     printf("ERROR<%s::%s>: Cannot create thread\n", CLASS_NAME, METHOD_NAME);
                 }
@@ -108,22 +107,25 @@ void AsyncThread::run()
             DDSConditionSeq conds;
             AsyncVector::iterator it;
 
-            boost::posix_time::ptime init_wait_moment = boost::posix_time::microsec_clock::local_time(); 
+            auto init_wait_moment = std::chrono::system_clock::now();
 
             retCode = m_waitSet->wait(conds, timeout);
 
-            boost::posix_time::ptime final_wait_moment = boost::posix_time::microsec_clock::local_time();
+            auto final_wait_moment = std::chrono::system_clock::now();
 
-            boost::lock_guard<boost::mutex> lock_guard(*m_mutex);
+            std::lock_guard<std::mutex> lock_guard(*m_mutex);
 
             // Update timeouts.
-            boost::posix_time::time_duration td = final_wait_moment - init_wait_moment;
+            auto td = final_wait_moment - init_wait_moment;
 
             for(it = m_vector.begin(); it != m_vector.end(); ++it)
             {
-                it->first = it->first - td;
-                if(it->first.is_negative())
-                    it->first = boost::posix_time::milliseconds(0);
+                if(it->first >= td) {
+                    it->first = it->first - td;
+                }
+                else {
+                    it->first = std::chrono::milliseconds(0);
+                }
             }
 
             if(retCode == DDS_RETCODE_OK)
@@ -167,7 +169,7 @@ void AsyncThread::run()
                 it = m_vector.begin();
                 while(it != m_vector.end())
                 {
-                    if(it->first == boost::posix_time::milliseconds(0))
+                    if(it->first == std::chrono::milliseconds(0))
                     {
                         it->second.second->on_exception(ServerTimeoutException("Asynchronous task exceed the time to wait the server's reply"));
                         m_waitSet->detach_condition(it->second.first);
@@ -202,7 +204,7 @@ void AsyncThread::run()
             }
         }
 
-        boost::lock_guard<boost::mutex> lock_guard(*m_mutex);
+        std::lock_guard<std::mutex> lock_guard(*m_mutex);
 
         m_waitSet->detach_condition(m_guardWaitSet);
 
@@ -225,9 +227,9 @@ int AsyncThread::addTask(DDS::QueryCondition *query, DDSAsyncTask *task, long ti
     if(query != NULL && task != NULL)
     {
         AsyncTaskPair tpair(query, task);
-        AsyncListPair lpair(boost::posix_time::milliseconds(timeout), tpair);
+        AsyncListPair lpair(std::chrono::milliseconds(timeout), tpair);
 
-        boost::unique_lock<boost::mutex> lock(*m_mutex);
+        std::unique_lock<std::mutex> lock(*m_mutex);
 
         // Set timeout like new for next calculation.
         DDS_TIMEOUT_SET(m_timeout, lpair.first);
@@ -264,7 +266,7 @@ void AsyncThread::deleteAssociatedAsyncTasks(ProxyProcedureEndpoint *pe)
 
     if(pe != NULL)
     {
-        boost::unique_lock<boost::mutex> lock(*m_mutex);
+        std::unique_lock<std::mutex> lock(*m_mutex);
 
         // Wake up the waitSet.
         m_guardWaitSet->set_trigger_value(BOOLEAN_TRUE);

@@ -10,11 +10,8 @@
 #include "ServerStrategyImpl.h"
 #include <transports/ServerTransport.h>
 
-#include <boost/config/user.hpp>
 #include <boost/asio/thread_pool.hpp>
 #include <boost/asio/post.hpp>
-#include <boost/bind/bind.hpp>
-#include <boost/smart_ptr/shared_ptr.hpp>
 
 static const char* const CLASS_NAME = "ThreadPoolStrategy";
 
@@ -27,7 +24,7 @@ class ThreadPoolStrategyJob
 public:
 
     ThreadPoolStrategyJob(
-            boost::function<void()> callback)
+            std::function<void()> callback)
         : m_callback(callback)
     {
     }
@@ -39,7 +36,7 @@ public:
 
 private:
 
-    boost::function<void()> m_callback;
+    std::function<void()> m_callback;
 };
 
 class ThreadPoolStrategyImpl : public ServerStrategyImpl
@@ -49,7 +46,7 @@ public:
     ThreadPoolStrategyImpl(
             unsigned int threadCount)
     {
-        m_pool = new boost::asio::thread_pool(threadCount);
+		m_pool = new boost::asio::thread_pool(threadCount);
     }
 
     virtual ~ThreadPoolStrategyImpl()
@@ -57,21 +54,21 @@ public:
         delete m_pool;
     }
 
-    boost::asio::thread_pool* getPool()
+	boost::asio::thread_pool* getPool()
     {
         return m_pool;
     }
 
     void schedule(
-            boost::function<void()> callback)
+            std::function<void()> callback)
     {
-        boost::shared_ptr<ThreadPoolStrategyJob> job(new ThreadPoolStrategyJob(callback));
-        boost::asio::post(*m_pool, boost::bind(&ThreadPoolStrategyJob::run, job));
+		std::shared_ptr<ThreadPoolStrategyJob> job(new ThreadPoolStrategyJob(callback));
+		boost::asio::post(*m_pool, std::bind(&ThreadPoolStrategyJob::run, job));
     }
 
 private:
 
-    boost::asio::thread_pool * m_pool;
+	boost::asio::thread_pool * m_pool;
 };
 
 } // namespace strategy

@@ -14,7 +14,10 @@
 #if RPC_WITH_RTIDDS
 
 #include <vector>
-#include <boost/thread.hpp>
+#include <chrono>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 
 #include "utils/dds/Middleware.h"
 
@@ -30,7 +33,8 @@ namespace eprosima
                 class ProxyProcedureEndpoint;
 
                 typedef std::pair<DDSQueryCondition*, DDSAsyncTask*> AsyncTaskPair;
-                typedef std::pair<boost::posix_time::time_duration, AsyncTaskPair> AsyncListPair;
+                //typedef std::pair<boost::posix_time::time_duration, AsyncTaskPair> AsyncListPair;
+                typedef std::pair<std::chrono::duration<uint64_t, std::nano>, AsyncTaskPair> AsyncListPair;
                 typedef std::vector<AsyncListPair> AsyncVector;
 
                 /**
@@ -77,15 +81,15 @@ namespace eprosima
                         void run();
 
                         /// \brief The separated thread that executes the functionality of this object.
-                        boost::thread m_thread;
+                        std::thread m_thread;
 
                         /// \brief Vector with all asynchronous tasks.
                         AsyncVector m_vector;
 
                         /// \brief Mutex
-                        boost::mutex *m_mutex;
+                        std::mutex *m_mutex;
                         /// \brief Variable condition.
-                        boost::condition_variable m_cond_wake_up;
+                        std::condition_variable m_cond_wake_up;
 
                         /// \brief Variable used to wake up a WaitSet.
                         DDSGuardCondition *m_guardWaitSet;

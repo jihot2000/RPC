@@ -11,15 +11,14 @@
 
 #include <transports/dds/components/ProxyProcedureEndpoint.h>
 #include <transports/dds/DDSAsyncTask.h>
-#include <protocols/dds/MessageHeader.h>
+//#include <protocols/dds/MessageHeader.h>
 #include <utils/macros/snprintf.h>
 #include <utils/macros/strdup.h>
 #include <utils/Typedefs.h>
 #include <utils/dds/Middleware.h>
 
-#include <boost/config/user.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <mutex>
+#include <chrono>
 
 #ifdef __linux
 #include <cinttypes>
@@ -53,7 +52,7 @@ int ProxyProcedureEndpoint::initialize(const char *name, const char *writertypen
         Transport::Copy_data copy_data, int dataSize)
 {
     const char* const METHOD_NAME = "initialize";
-    m_mutex =  new boost::mutex();
+    m_mutex =  new std::mutex();
 
     if(m_mutex != NULL)
     {
@@ -401,7 +400,7 @@ ReturnMessage ProxyProcedureEndpoint::send(void *request, void *reply)
     ReturnMessage returnedValue = CLIENT_INTERNAL_ERROR;
     DDS::WaitSet *waitSet = NULL;
     DDS::ReturnCode_t retCode;
-    boost::posix_time::time_duration tTimeout = boost::posix_time::milliseconds(m_transport.getTimeout());
+    std::chrono::duration<uint64_t, std::nano> tTimeout = std::chrono::milliseconds(m_transport.getTimeout());
     char high_value[25], low_value[25];
     char *auxPointerToRequest = NULL, *seqAuxPointer = NULL;
     char **auxPointerToRemoteServiceName = NULL;
@@ -720,7 +719,7 @@ ReturnMessage ProxyProcedureEndpoint::checkServerConnection(DDS::WaitSet *waitSe
     ReturnMessage returnedValue = OK;
     DDS::StatusCondition *statusCondition = NULL;
     DDS::ReturnCode_t retCode;
-    boost::posix_time::time_duration tTimeout = boost::posix_time::milliseconds(timeout);
+    std::chrono::duration<uint64_t, std::nano> tTimeout = std::chrono::milliseconds(timeout);
     DDS_TIMEOUT(ddsTimeout, tTimeout);
 
     if(waitSet != NULL)

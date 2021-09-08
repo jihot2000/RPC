@@ -1,7 +1,9 @@
 #include <protocols/dds/MessageHeader.h>
 #include <utils/macros/strdup.h>
 
+#if RPC_WITH_FASTRTPS
 #include <fastcdr/Cdr.h>
+#endif
 
 using namespace eprosima::rpc;
 using namespace ::protocol::dds;
@@ -35,6 +37,7 @@ EntityId_t& EntityId_t::operator=(const EntityId_t &x)
     return *this;
 }
 
+#if RPC_WITH_FASTRTPS
 size_t EntityId_t::getMaxCdrSerializedSize(size_t /*current_alignment*/)
 {
     return 4;
@@ -56,6 +59,7 @@ void EntityId_t::deserialize(eprosima::fastcdr::Cdr &cdr)
     cdr.deserializeArray(entityKey_, 3);
     cdr >> entityKind_;
 }
+#endif
 
 GUID_t::GUID_t()
 {
@@ -112,6 +116,7 @@ GUID_t& GUID_t::operator=(const GUID_t &guid)
     return *this;
 }
 
+#if RPC_WITH_FASTRTPS
 size_t GUID_t::getMaxCdrSerializedSize(size_t /*current_alignment*/)
 {
     return 16;
@@ -133,6 +138,7 @@ void GUID_t::deserialize(eprosima::fastcdr::Cdr &cdr)
     cdr.deserializeArray(guidPrefix_, 12);
     cdr >> entityId_;
 }
+#endif
 
 SequenceNumber_t::SequenceNumber_t() : high_(0), low_(0)
 {
@@ -170,6 +176,7 @@ SequenceNumber_t& SequenceNumber_t::operator=(SequenceNumber_t &&x)
     return *this;
 }
 
+#if RPC_WITH_FASTRTPS
 size_t SequenceNumber_t::getMaxCdrSerializedSize(size_t current_alignment)
 {
     size_t initial_alignment = current_alignment;
@@ -200,6 +207,7 @@ void SequenceNumber_t::deserialize(eprosima::fastcdr::Cdr &cdr)
     cdr >> high_;
     cdr >> low_;
 }
+#endif
 
 SampleIdentity::SampleIdentity()
 {
@@ -235,6 +243,7 @@ SampleIdentity& SampleIdentity::operator=(SampleIdentity &&id)
     return *this;
 }
 
+#if RPC_WITH_FASTRTPS
 size_t SampleIdentity::getMaxCdrSerializedSize(size_t current_alignment)
 {
     size_t initial_alignment = current_alignment;
@@ -265,6 +274,7 @@ void SampleIdentity::deserialize(eprosima::fastcdr::Cdr &cdr)
 {
     cdr >> writer_guid_ >> sequence_number_;
 }
+#endif
 
 rpc::RequestHeader::RequestHeader() : instanceName_(NULL)
 {
@@ -306,6 +316,7 @@ rpc::RequestHeader& rpc::RequestHeader::operator=(rpc::RequestHeader &&header)
     return *this;
 }
 
+#if RPC_WITH_FASTRTPS
 size_t rpc::RequestHeader::getMaxCdrSerializedSize(size_t current_alignment)
 {
     size_t initial_alignment = current_alignment;
@@ -335,6 +346,7 @@ void rpc::RequestHeader::deserialize(eprosima::fastcdr::Cdr &cdr)
 {
     cdr >> requestId_ >> instanceName_;
 }
+#endif
 
 rpc::ReplyHeader::ReplyHeader()
 {
@@ -370,6 +382,7 @@ rpc::ReplyHeader& rpc::ReplyHeader::operator=(rpc::ReplyHeader &&header)
     return *this;
 }
 
+#if RPC_WITH_FASTRTPS
 size_t rpc::ReplyHeader::getMaxCdrSerializedSize(size_t current_alignment)
 {
     size_t initial_alignment = current_alignment;
@@ -401,3 +414,4 @@ void rpc::ReplyHeader::deserialize(eprosima::fastcdr::Cdr &cdr)
     cdr >> relatedRequestId_ >> ex_value;
     remoteEx_ = static_cast<RemoteExceptionCode_t>(ex_value);
 }
+#endif

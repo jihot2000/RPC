@@ -26,11 +26,11 @@ namespace eprosima
 
 					virtual ~SingleThreadStrategyImpl(){};
 
-					void schedule(boost::function<void()> callback)
+					void schedule(std::function<void()> callback)
 					{
 						const char* const METHOD_NAME = "schedule";
 
-						if(!callback.empty())
+						if(callback)
 						{
 							callback();
 						}

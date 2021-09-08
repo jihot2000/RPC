@@ -13,10 +13,7 @@
 #include <strategies/ServerStrategy.h>
 #include "../../../strategies/ServerStrategyImpl.h"
 #include <utils/macros/snprintf.h>
-
-#include <boost/config/user.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/bind.hpp>
+#include <mutex>
 
 using namespace eprosima::rpc;
 using namespace ::transport::dds;
@@ -46,7 +43,7 @@ int ServerProcedureEndpoint::initialize(const char *name, const char *writertype
     if(name != NULL && readertypename != NULL && create_data != NULL && destroy_data != NULL &&
             processFunc != NULL && dataSize > 0)
     {
-        m_mutex =  new boost::mutex();
+        m_mutex =  new std::mutex();
 
         if(m_mutex != NULL)
         {
@@ -310,7 +307,7 @@ void ServerProcedureEndpoint::on_data_available(DDS::DataReader* reader)
 	{
 		if(info.valid_data == BOOLEAN_TRUE)
 		{
-			m_transport.getStrategy().getImpl()->schedule(boost::bind(&ServerTransport::process, &m_transport, this, data));
+			m_transport.getStrategy().getImpl()->schedule(std::bind(&ServerTransport::process, &m_transport, this, data));
             
             data = m_create_data();
 		}

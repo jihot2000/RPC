@@ -18,10 +18,12 @@
 
 namespace eprosima
 {
+    #if RPC_WITH_FASTRTPS
     namespace fastcdr
     {
         class Cdr;
     }
+    #endif
 
     namespace rpc
     {
@@ -58,6 +60,7 @@ namespace eprosima
                             return entityKind_;
                         }
 
+                        #if RPC_WITH_FASTRTPS
                         /*!
                          * @brief This function returns the maximum serialized size of a GUID_t object
                          * depending on the buffer alignment.
@@ -85,6 +88,7 @@ namespace eprosima
                          * @param cdr CDR serialization object.
                          */
                         void deserialize(eprosima::fastcdr::Cdr &cdr);
+                        #endif
 
                     private:
 
@@ -119,6 +123,7 @@ namespace eprosima
                             return entityId_;
                         }
 
+                        #if RPC_WITH_FASTRTPS
                         /*!
                          * @brief This function returns the maximum serialized size of a GUID_t object
                          * depending on the buffer alignment.
@@ -146,6 +151,7 @@ namespace eprosima
                          * @param cdr CDR serialization object.
                          */
                         void deserialize(eprosima::fastcdr::Cdr &cdr);
+                        #endif
 
                     private:
 
@@ -248,6 +254,7 @@ namespace eprosima
                             return low_;
                         }
 
+                        #if RPC_WITH_FASTRTPS
                         /*!
                          * @brief This function returns the maximum serialized size of an object
                          * depending on the buffer alignment.
@@ -275,6 +282,7 @@ namespace eprosima
                          * @param cdr FastCDR serialization object.
                          */
                         void deserialize(eprosima::fastcdr::Cdr &cdr);
+                        #endif
 
                     private:
                         int32_t high_;
@@ -383,6 +391,7 @@ namespace eprosima
                             return sequence_number_;
                         }
 
+                        #if RPC_WITH_FASTRTPS
                         /*!
                          * @brief This function returns the maximum serialized size of a SampleIdentity object
                          * depending on the buffer alignment.
@@ -410,6 +419,7 @@ namespace eprosima
                          * @param cdr CDR serialization object.
                          */
                         void deserialize(eprosima::fastcdr::Cdr &cdr);
+                        #endif
 
                     private:
 
@@ -531,6 +541,7 @@ namespace eprosima
                                 return instanceName_;
                             }
 
+                            #if RPC_WITH_FASTRTPS
                             /*!
                              * @brief This function returns the maximum serialized size of a RequestHeader object
                              * depending on the buffer alignment.
@@ -558,6 +569,7 @@ namespace eprosima
                              * @param cdr CDR serialization object.
                              */
                             void deserialize(eprosima::fastcdr::Cdr &cdr);
+                            #endif
 
                         private:
 
@@ -655,6 +667,7 @@ namespace eprosima
                                 return remoteEx_;
                             }
 
+                            #if RPC_WITH_FASTRTPS
                             /*!
                              * @brief This function returns the maximum serialized size of a ReplyHeader object
                              * depending on the buffer alignment.
@@ -682,6 +695,7 @@ namespace eprosima
                              * @param cdr CDR serialization object.
                              */
                             void deserialize(eprosima::fastcdr::Cdr &cdr);
+                            #endif
 
                         private:
 

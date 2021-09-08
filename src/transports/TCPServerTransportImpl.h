@@ -9,7 +9,7 @@
 #ifndef _TRANSPORTS_TCPSERVERTRANSPORTIMPL_H_
 #define _TRANSPORTS_TCPSERVERTRANSPORTIMPL_H_
 
-#include <boost/function.hpp>
+#include <functional>
 
 namespace eprosima
 {
@@ -24,7 +24,7 @@ namespace eprosima
 					 * @brief Callback designed to receive a proxy request and schedule it invoking the concrete threading strategy.
 					 * @ingroup TRANSPORTMODULE
 					 */
-                    boost::function<void(TCPEndpoint*)> function;
+                    std::function<void(TCPEndpoint*)> function;
             };
         } // namespace transport
     }// namespace rpc

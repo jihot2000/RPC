@@ -197,8 +197,8 @@ endif()
 ###############################################################################
 # Check libraries
 ###############################################################################
-include(${PROJECT_SOURCE_DIR}/cmake/dev/boost_libraries.cmake)
-check_boost(thread system date_time chrono regex atomic)
+#include(${PROJECT_SOURCE_DIR}/cmake/dev/boost_libraries.cmake)
+#check_boost(thread system date_time chrono regex atomic)
 
 ###############################################################################
 # Default shared libraries
@@ -227,8 +227,23 @@ endif()
 
 if(RPCPROTO STREQUAL "rpcdds" AND WITH_RTIDDS)
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
-    find_package(RTIDDS 5.1 REQUIRED)
+    set(RTIDDS_DEFINITIONS "RTI_LINUX" "RTI_UNIX")
+    set(RTIDDS_INCLUDE_DIRS "$ENV{HOME}/MDS/usr/include/DDS" "$ENV{HOME}/MDS/usr/include/DDS/ndds")
+    set(RTIDDS_LIBRARIES "")
+    list(APPEND RTIDDS_LIBRARIES "optimized")
+    list(APPEND RTIDDS_LIBRARIES "$ENV{HOME}/MDS/usr/lib/libnddsc.so")
+    list(APPEND RTIDDS_LIBRARIES "optimized")
+    list(APPEND RTIDDS_LIBRARIES "$ENV{HOME}/MDS/usr/lib/libnddscore.so")
+    list(APPEND RTIDDS_LIBRARIES "optimized")
+    list(APPEND RTIDDS_LIBRARIES "$ENV{HOME}/MDS/usr/lib/libnddscpp.so")
+    list(APPEND RTIDDS_LIBRARIES "debug")
+    list(APPEND RTIDDS_LIBRARIES "$ENV{HOME}/MDS/usr/lib/libnddscd.so")
+    list(APPEND RTIDDS_LIBRARIES "debug")
+    list(APPEND RTIDDS_LIBRARIES "$ENV{HOME}/MDS/usr/lib/libnddscored.so")
+    list(APPEND RTIDDS_LIBRARIES "debug")
+    list(APPEND RTIDDS_LIBRARIES "$ENV{HOME}/MDS/usr/lib/libnddscppd.so")
 endif()
+
 
 ###############################################################################
 # Java application
@@ -250,6 +265,7 @@ endif()
 ###############################################################################
 # Compile library.
 ###############################################################################
+include_directories(/usr/local/boost-1.75/include)
 add_subdirectory(src)
 
 ###############################################################################
@@ -394,7 +410,7 @@ endif()
 ###############################################################################
 # Packaging
 ###############################################################################
-install_boost(ALL thread system date_time chrono regex atomic)
+#install_boost(ALL thread system date_time chrono regex atomic)
 
 # Install licenses
 install(FILES ${PROJECT_SOURCE_DIR}/${PROJECT_NAME_UPPER}_LICENSE.txt

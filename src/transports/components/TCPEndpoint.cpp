@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <vector>
-#include <boost/bind.hpp>
 
 using namespace eprosima::rpc;
 using namespace ::transport;

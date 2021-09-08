@@ -52,3 +52,5 @@ utils/pcTests/rti/Thread*.txt
 # Installers
 utils/installers/rti/linux/*.tar.gz
 utils/installers/rti/windows/*.exe
+
+.vscode/

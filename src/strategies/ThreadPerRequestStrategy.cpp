@@ -9,8 +9,7 @@
 #include <strategies/ThreadPerRequestStrategy.h>
 #include "ServerStrategyImpl.h"
 #include <transports/ServerTransport.h>
-
-#include "boost/thread.hpp"
+#include <thread>
 
 static const char* const CLASS_NAME = "ThreadPerRequestStrategy";
 
@@ -23,7 +22,7 @@ namespace eprosima
             class ThreadPerRequestStrategyJob
             {
                 public:
-                    ThreadPerRequestStrategyJob(boost::function<void()> callback)
+                    ThreadPerRequestStrategyJob(std::function<void()> callback)
                         : m_callback(callback)
                     {
                     }
@@ -35,7 +34,7 @@ namespace eprosima
 
                 private:
                     
-                    boost::function<void()> m_callback;
+                    std::function<void()> m_callback;
             };
 
 			class ThreadPerRequestStrategyImpl : public ServerStrategyImpl
@@ -53,10 +52,10 @@ namespace eprosima
                      *
                      * \param data The request. Cannot be NULL.
                      */
-                    void schedule(boost::function<void()> callback)
+                    void schedule(std::function<void()> callback)
 					{
-						boost::shared_ptr<ThreadPerRequestStrategyJob> job(new ThreadPerRequestStrategyJob(callback));
-						boost::thread thread(boost::bind(&ThreadPerRequestStrategyJob::run, job));
+						std::shared_ptr<ThreadPerRequestStrategyJob> job(new ThreadPerRequestStrategyJob(callback));
+						std::thread thread(std::bind(&ThreadPerRequestStrategyJob::run, job));
 						thread.detach();
 					}
             };

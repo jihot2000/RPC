@@ -19,7 +19,7 @@
 
 #include <cstdint>
 
-namespace boost
+namespace std
 {
     class mutex;
 }
@@ -169,7 +169,7 @@ namespace eprosima
                         void returnUsedQueryToPool(DDSQueryCondition *query);
 
                         //! @brief Mutex used to ensure that sequence number and query pool is safe-thread.
-                        boost::mutex *m_mutex;
+                        std::mutex *m_mutex;
 
                         //! @brief Transport that created the proxy procedure endpoint.
                         ProxyTransport &m_transport;

@@ -22,7 +22,7 @@
 
 #include <string>
 
-namespace boost
+namespace std
 {
     class mutex;
 }
@@ -148,7 +148,7 @@ namespace eprosima
 
                         int m_dataSize;
 
-                        boost::mutex *m_mutex;
+                        std::mutex *m_mutex;
 
                         int m_started;
                 };

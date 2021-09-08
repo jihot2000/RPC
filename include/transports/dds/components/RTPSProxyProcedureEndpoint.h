@@ -25,12 +25,66 @@
 #include <cstdint>
 #include <map>
 
-namespace boost
+namespace std
 {
     class mutex;
     class shared_mutex;
-    class condition_variable_any;
+    inline namespace _V2 {
+        class condition_variable_any;
+    }
 }
+
+class myrwlock
+{
+public:
+    inline myrwlock()
+    {
+        pthread_rwlock_init(&_lock, nullptr);
+    }
+
+    inline ~myrwlock()
+    {
+        pthread_rwlock_destroy(&_lock);
+    }
+
+    inline void read_lock()
+    {
+        pthread_rwlock_rdlock(&_lock);
+    }
+
+    inline void write_lock()
+    {
+        pthread_rwlock_wrlock(&_lock);
+    }
+
+    inline bool try_read_lock()
+    {
+        return pthread_rwlock_tryrdlock(&_lock) == 0;
+    }
+
+    inline bool try_write_lock()
+    {
+        return pthread_rwlock_trywrlock(&_lock) == 0;
+    }
+
+    inline void lock()
+    {
+        read_lock();
+    }
+
+    inline void try_lock()
+    {
+        try_read_lock();
+    }
+
+    inline void unlock()
+    {
+        pthread_rwlock_unlock(&_lock);
+    }
+
+private:
+    pthread_rwlock_t _lock;
+};
 
 namespace eprosima
 {
@@ -147,17 +201,17 @@ namespace eprosima
                         void addAsyncTask(RTPSAsyncTask *task, int64_t numSec);
 
                         //! @brief Mutex used to ensure that sequence number and query pool is safe-thread.
-                        boost::mutex *m_mutex;
+                        std::mutex *m_mutex;
 
-                        boost::mutex *recv_mutex_;
+                        std::mutex *recv_mutex_;
 
                         std::map<int64_t, RecvPoint&> recv_threads;
 
-                        boost::shared_mutex *matched_mutex_;
+                        myrwlock matched_rwlock_;
 
-                        boost::condition_variable_any *matched_sub_cond_;
+                        std::condition_variable_any *matched_sub_cond_;
 
-                        boost::condition_variable_any *matched_pub_cond_;
+                        std::condition_variable_any *matched_pub_cond_;
 
                         unsigned int num_matched_sub_;
 

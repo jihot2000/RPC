@@ -14,8 +14,6 @@
 #include <transports/messages/HttpMessage.h>
 #include <utils/Utilities.h>
 
-#include <boost/bind.hpp>
-
 using namespace eprosima::rpc;
 using namespace transport;
 
@@ -23,7 +21,7 @@ const char* const CLASS_NAME = "HttpServerTransport";
 
 HttpServerTransport::HttpServerTransport(const char* const &to_connect) : m_tcptransport(to_connect)
 {
-    m_tcptransport.onBossProcess->function = boost::bind(&HttpServerTransport::bossProcess, this, _1);
+    m_tcptransport.onBossProcess->function = std::bind(&HttpServerTransport::bossProcess, this, _1);
 }
 
 HttpServerTransport::~HttpServerTransport()
@@ -100,7 +98,7 @@ int HttpServerTransport::receive(char* /*buffer*/, size_t /*bufferLength*/, size
 
 void HttpServerTransport::bossProcess(TCPEndpoint* connection)
 {
-    getStrategy().getImpl()->schedule(boost::bind(&HttpServerTransport::worker, this, connection));
+    getStrategy().getImpl()->schedule(std::bind(&HttpServerTransport::worker, this, connection));
 }
 
 void HttpServerTransport::worker(TCPEndpoint* connection)
