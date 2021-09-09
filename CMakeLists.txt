@@ -217,7 +217,7 @@ if(EPROSIMA_BUILD)
     set(THIRDPARTY ON)
 endif()
 
-if(RPCPROTO STREQUAL "fastrpc" OR RPCPROTO STREQUAL "rpcdds")
+if(RPCPROTO STREQUAL "fastrpc" OR (RPCPROTO STREQUAL "rpcdds" AND WITH_FASTRTPS))
     find_package(fastcdr)
 endif()
 
