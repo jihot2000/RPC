@@ -25,6 +25,7 @@
 #include <fastrtps/subscriber/SampleInfo.h>
 
 #include <mutex>
+#include <condition_variable>
 
 #ifdef __linux
 #include <cinttypes>
